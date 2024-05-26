@@ -1,5 +1,15 @@
-/*import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:flutter/material.dart';
+
+class AppSettings {
+  static Color getCor() {
+    return const Color(0xFF204522);
+  }
+
+  static Color getCorTexto() {
+    return Colors.white;
+  }
+}
+/*import 'package:hive_flutter/adapters.dart';
 import 'package:projeto/models/gasto_mes.dart';
 import 'package:projeto/models/recebimento_mes.dart';
 import 'package:projeto/repositories/gastomes_repository.dart';

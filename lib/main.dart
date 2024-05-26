@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-//import 'package:projeto/configs/hive_config.dart';
 import 'pages/login_page.dart';
-//import 'pages/home_page.dart';
+import 'package:projeto/configs/app_settings.dart';
 
 void main() {
-  //WidgetsFlutterBinding.ensureInitialized();
-  //await HiveConfig.start();
   runApp(const MyApp());
 }
 
@@ -17,8 +14,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LuS',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF204522)),
-        scaffoldBackgroundColor: const Color(0xFFBADBC0), //Colors.white10,
+        colorScheme: ColorScheme.fromSeed(seedColor: AppSettings.getCor()),
+        scaffoldBackgroundColor: const Color(0xFFBADBC0),
       ),
       home: const Scaffold(
         body: LogInPage(),

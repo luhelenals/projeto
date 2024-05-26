@@ -154,7 +154,7 @@ class _AddDespesaPageState extends State<AddDespesaPage> {
                               data: _inputData.data,
                               valor: _inputData.valor,
                               descricao: _inputData.descricao.toString(),
-                              categoria: _inputData.categoria, id: _inputData.id,
+                              categoria: _inputData.categoria,
                             ));
                         Navigator.push(
                           context,
@@ -223,7 +223,6 @@ class InputData {
   Categoria categoria = Categoria(categoria: enumCategoria.comida);
   String? formaPagamento;
   int parcelas = 1;
-  int id = 0;
 
   bool isFilled() {
     return descricao != null &&

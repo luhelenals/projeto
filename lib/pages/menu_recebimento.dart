@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto/pages/add_recebimento_page.dart';
 import 'package:projeto/repositories/meses_repository.dart';
 import 'package:projeto/repositories/recebimentos_repository.dart';
+import 'package:projeto/configs/app_settings.dart';
 
 class MenuRecebimento extends StatelessWidget {
   @override
@@ -12,7 +13,9 @@ class MenuRecebimento extends StatelessWidget {
       appBar: AppBar(
           automaticallyImplyLeading: false,
           centerTitle: true,
-          title: Text('Recebimentos: ${MesRepository.obterMesAtual().nome}')),
+          backgroundColor: AppSettings.getCor(),
+          title: Text('Recebimentos: ${MesRepository.obterMesAtual().nome}',
+              style: TextStyle(color: AppSettings.getCorTexto()))),
       body: Center(
         child: Stack(children: [
           Column(

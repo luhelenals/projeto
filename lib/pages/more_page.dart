@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
+import 'package:projeto/configs/app_settings.dart';
 
 class MorePage extends StatelessWidget {
   const MorePage({Key? key});
@@ -56,7 +57,6 @@ class MorePage extends StatelessWidget {
               );
             },
           ),
-          // Add more options as needed
         ],
       ),
     );
@@ -68,7 +68,10 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perfil'),
+        title:
+            Text('Perfil', style: TextStyle(color: AppSettings.getCorTexto())),
+        backgroundColor: AppSettings.getCor(),
+        iconTheme: IconThemeData(color: AppSettings.getCorTexto()),
       ),
       body: const Center(
         child: Column(
@@ -94,7 +97,10 @@ class NotificationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notificações'),
+        title: Text('Notificações',
+            style: TextStyle(color: AppSettings.getCorTexto())),
+        backgroundColor: AppSettings.getCor(),
+        iconTheme: IconThemeData(color: AppSettings.getCorTexto()),
       ),
       body: const Center(
         child: Text('implementar'),
@@ -108,7 +114,9 @@ class ThemePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tema'),
+        title: Text('Tema', style: TextStyle(color: AppSettings.getCorTexto())),
+        backgroundColor: AppSettings.getCor(),
+        iconTheme: IconThemeData(color: AppSettings.getCorTexto()),
       ),
       body: Center(
         child: const Text('implementar'),

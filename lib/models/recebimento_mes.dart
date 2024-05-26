@@ -10,7 +10,7 @@ class RecebimentoMensal {
     valorTotal = obterRecebimentoTotal(listaRecebimentos);
   }
 
-  double obterRecebimentoTotal(List<Recebimento> lista) {
+  static double obterRecebimentoTotal(List<Recebimento> lista) {
     double soma = 0;
     for (int i = 0; i < lista.length; i++) {
       soma += lista[i].valor;

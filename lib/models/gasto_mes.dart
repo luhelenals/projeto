@@ -26,4 +26,8 @@ class GastoMensal {
     }
     return valoresCategoria;
   }
+
+  static double atualizarTotal(List<double> despesas) {
+    return despesas.reduce((value, element) => value + element);
+  }
 }

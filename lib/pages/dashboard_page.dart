@@ -1,22 +1,17 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:projeto/configs/app_settings.dart';
 import 'package:projeto/models/gasto_mes.dart';
 import 'package:projeto/models/recebimento_mes.dart';
 import 'package:projeto/repositories/gastomes_repository.dart';
 import 'package:projeto/repositories/meses_repository.dart';
 import 'package:projeto/repositories/recebimentos_repository.dart';
 import 'package:projeto/models/mes.dart';
-//import 'package:projeto/models/pie_chart.dart';
+import 'package:projeto/models/pie_chart.dart';
 
 class DashboardPage extends StatefulWidget {
-  //final Mes month;
-  //final GastoMensal resumoGast;
-  //final RecebimentoMensal resumoReceb;
   const DashboardPage({
     Key? key,
-    //required this.month,
-    //required this.resumoGast,
-    /*required this.resumoReceb*/
   }) : super(key: key);
 
   @override
@@ -31,19 +26,18 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    loadTabelas();
+    loadTabelas(); // Fetch initial data when the page is first built
   }
 
   void loadTabelas() {
-    // Fetch your data from repository
-    resumoGast = GastoMensalRepository.obterGastos(month.num);
-    resumoReceb = RecebimentosRepository.obterRecebimentoMensal(month.num);
+    setState(() {
+      resumoGast = GastoMensalRepository.obterGastos(month.num);
+      resumoReceb = RecebimentosRepository.obterRecebimentoMensal(month.num);
+    });
   }
 
-  @override
   void updateData() {
     setState(() {
-      // Reload data
       loadTabelas();
     });
   }
@@ -51,144 +45,170 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     // cálculo de variáveis
-    double progressValue = resumoReceb.valorTotal != 0
-        ? resumoGast.valorTotal / resumoReceb.valorTotal
-        : 0;
-
-    // ainda não sei o que fazer quando for janeiro (código ano+mês em vez de só mês?)
-    // 05/2024 -> 20245
-    // 01/2024 -> 20241
-    // 12/2023 -> 202312
-    double diferencaMes = 0.0;
-    if (month.num > 1) {
-      GastoMensal gastosMesAnterior =
-          GastoMensalRepository.obterGastos(month.num - 1);
-      diferencaMes = gastosMesAnterior.valorTotal != 0
-          ? gastosMesAnterior.valorTotal - resumoGast.valorTotal
-          : 0;
-    }
-
-    List<double> listaGasto = [];
-    List<String> listaNomes = [];
-
-    if (resumoGast.despesas.isNotEmpty) {
-      listaGasto = List.filled(resumoGast.despesas.length, 0);
-      listaNomes = List.filled(resumoGast.despesas.length, '');
-      for (int i = 0; i < resumoGast.despesas.length; i++) {
-        listaGasto[i] = resumoGast.despesas[i].valor;
-        listaNomes[i] = resumoGast.despesas[i].descricao;
-      }
-    }
-
-    double valorItemMaiorGasto =
-        listaGasto.isNotEmpty ? listaGasto.reduce(max) : 0;
-    String itemMaiorGasto = listaGasto.isNotEmpty
-        ? listaNomes[listaGasto.indexOf(valorItemMaiorGasto)]
-        : '';
-
-    return Scaffold(
-      body: Column(
+    if (resumoGast.valorTotal == 0) {
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(
-            height: 30,
+            height: 15,
           ),
-          Container(
-              width: 420,
-              height: 70,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFF204522),
-              ),
-              child: Center(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                    Text(
-                      'Você gastou ${(progressValue * 100).toStringAsFixed(2)}% dos seus recebimentos do mês.',
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    LinearProgressIndicator(
-                      value: progressValue, // Set the progress value here
-                      backgroundColor: Colors.white,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                          Color(0xFF587459)),
-                      borderRadius: BorderRadius.circular(2),
-                      minHeight: 3,
-                    ),
-                  ]))),
-          const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                  width: 190,
-                  height: 90,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xFF204522),
-                  ),
-                  child: Center(
-                      child: Text(
-                    'Você está R\$${diferencaMes.toString()} abaixo dos seus gastos do mês passado!',
-                    style: const TextStyle(color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ))),
-              const SizedBox(width: 40),
-              Container(
-                  width: 190,
-                  height: 90,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xFF204522),
-                  ),
-                  child: Center(
-                    child: Text(
-                        'Seu maior gasto do mês até agora foi com ${itemMaiorGasto.toString()} (R\$${valorItemMaiorGasto.toString()})',
-                        style: const TextStyle(color: Colors.white),
-                        textAlign: TextAlign.center),
-                  )),
-            ],
+          const Text(
+            'Ainda sem gastos por aqui!',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 30),
-          //GraficoGastosCategoria(),
-          const SizedBox(height: 30),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(const Color(0xFFDEFFDF)),
-              minimumSize: MaterialStateProperty.all<Size>(const Size(200, 50)),
-              textStyle: MaterialStateProperty.all<TextStyle>(
-                const TextStyle(color: Color(0xFF204522)),
-              ),
-            ),
-            child: const Text(
-              'Meses',
-              style: TextStyle(
-                  color: Color(0xFF204522),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DetailedMonthPage()),
-              );
-            },
-          ),
+          MesesButton(),
         ],
+      );
+    } else {
+      double progressValue = resumoReceb.valorTotal != 0
+          ? resumoGast.valorTotal / resumoReceb.valorTotal
+          : 0;
+
+      // ainda não sei o que fazer quando for janeiro (código ano+mês em vez de só mês?)
+      // 05/2024 -> 20245
+      // 01/2024 -> 20241
+      // 12/2023 -> 202312
+      double diferencaMes = 0.0;
+      if (month.num > 1) {
+        GastoMensal gastosMesAnterior =
+            GastoMensalRepository.obterGastos(month.num - 1);
+        diferencaMes = gastosMesAnterior.valorTotal != 0
+            ? gastosMesAnterior.valorTotal - resumoGast.valorTotal
+            : 0;
+      }
+
+      List<double> listaGasto = [];
+      List<String> listaNomes = [];
+
+      if (resumoGast.despesas.isNotEmpty) {
+        listaGasto = List.filled(resumoGast.despesas.length, 0);
+        listaNomes = List.filled(resumoGast.despesas.length, '');
+        for (int i = 0; i < resumoGast.despesas.length; i++) {
+          listaGasto[i] = resumoGast.despesas[i].valor;
+          listaNomes[i] = resumoGast.despesas[i].descricao;
+        }
+      }
+
+      double valorItemMaiorGasto =
+          listaGasto.isNotEmpty ? listaGasto.reduce(max) : 0;
+      String itemMaiorGasto = listaGasto.isNotEmpty
+          ? listaNomes[listaGasto.indexOf(valorItemMaiorGasto)]
+          : '';
+
+      return Scaffold(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            Container(
+                width: 420,
+                height: 70,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: const Color(0xFF204522),
+                ),
+                child: Center(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                      Text(
+                        'Você gastou ${(progressValue * 100).toStringAsFixed(2)}% dos seus recebimentos do mês.',
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      LinearProgressIndicator(
+                        value: progressValue, // Set the progress value here
+                        backgroundColor: Colors.white,
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                            Color(0xFF587459)),
+                        borderRadius: BorderRadius.circular(2),
+                        minHeight: 3,
+                      ),
+                    ]))),
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                    width: 190,
+                    height: 90,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color(0xFF204522),
+                    ),
+                    child: Center(
+                        child: Text(
+                      'Você está R\$${diferencaMes.toString()} abaixo dos seus gastos do mês passado!',
+                      style: const TextStyle(color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ))),
+                const SizedBox(width: 40),
+                Container(
+                    width: 190,
+                    height: 90,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color(0xFF204522),
+                    ),
+                    child: Center(
+                      child: Text(
+                          'Seu maior gasto do mês até agora foi com ${itemMaiorGasto.toString()} (R\$${valorItemMaiorGasto.toString()})',
+                          style: const TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center),
+                    )),
+              ],
+            ),
+            const SizedBox(height: 30),
+            GraficoGastosCategoria(
+                currentMonth: MesRepository.obterMesAtual().num),
+            const SizedBox(height: 30),
+            MesesButton(),
+          ],
+        ),
+      );
+    }
+  }
+}
+
+class MesesButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor:
+            WidgetStateProperty.all<Color>(const Color(0xFFDEFFDF)),
+        minimumSize: WidgetStateProperty.all<Size>(const Size(200, 50)),
+        textStyle: WidgetStateProperty.all<TextStyle>(
+          const TextStyle(color: Color(0xFF204522)),
+        ),
       ),
+      child: const Text(
+        'Meses',
+        style: TextStyle(
+            color: Color(0xFF204522),
+            fontSize: 20,
+            fontWeight: FontWeight.bold),
+      ),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => DetailedMonthPage()),
+        );
+      },
     );
   }
 }
@@ -295,11 +315,14 @@ class _DetailedSpendingState extends State<DetailedSpendingPage> {
 class DetailedMonthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final tabela = GastoMensalRepository.obterGastos(1);
+    final tabela = GastoMensalRepository.tabela;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gastos por mês'),
+        title: Text('Gastos por mês',
+            style: TextStyle(color: AppSettings.getCorTexto())),
+        backgroundColor: AppSettings.getCor(),
+        iconTheme: IconThemeData(color: AppSettings.getCorTexto()),
       ),
       body: ListView.separated(
         itemBuilder: (BuildContext context, int linha) {

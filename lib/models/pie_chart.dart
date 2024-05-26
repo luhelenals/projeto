@@ -1,56 +1,100 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:projeto/models/despesa.dart';
-import 'dart:math';
 import 'package:projeto/repositories/gastomes_repository.dart';
-import 'package:projeto/repositories/meses_repository.dart';
+import 'package:projeto/models/gasto_categoria.dart';
 
 class GraficoGastosCategoria extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Fetch your data from repository
-    List<Despesa> tabela =
-        GastoMensalRepository.obterGastos(MesRepository.obterMesAtual().num)
-            .despesas;
+  final int currentMonth;
 
-    // Create a map to store the total spending for each category
-    Map<String, double> categoryMap = {};
+  GraficoGastosCategoria({required this.currentMonth});
 
-    // Calculate the total spending for each category
-    tabela.forEach((gasto) {
-      if (categoryMap.containsKey(gasto.categoria.categoria)) {
-        categoryMap[gasto.categoria.categoria.name] =
-            (categoryMap[gasto.categoria.categoria.name] ?? 0) + gasto.valor;
-      } else {
-        categoryMap[gasto.categoria.categoria.name] = gasto.valor;
-      }
-    });
+  Future<List<PieChartSectionData>> _getPieChartSections(int month) async {
+    final expenses = GastoMensalRepository.obterGastos(month).despesas;
+    final Map<enumCategoria, double> categoryTotals = {};
 
-    // Convert the categoryMap to a list of PieChartSectionData
-    List<PieChartSectionData> sections = categoryMap.entries.map((entry) {
+    for (var expense in expenses) {
+      categoryTotals.update(
+        expense.categoria.categoria,
+        (value) => value + expense.valor,
+        ifAbsent: () => expense.valor,
+      );
+    }
+
+    return categoryTotals.entries.map((entry) {
       return PieChartSectionData(
-        color: getRandomColor(), // You can define your own colors
+        color: _getColorForCategory(entry.key),
         value: entry.value,
-        title: '${entry.key}\n\$${entry.value.toStringAsFixed(2)}',
-        radius: 100,
-        titleStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        title: entry.key.name,
+        radius: 70,
       );
     }).toList();
+  }
 
-    return PieChart(
-      PieChartData(
-        sections: sections,
-        borderData: FlBorderData(show: false),
-        centerSpaceRadius: 40,
-        sectionsSpace: 0,
-        pieTouchData: PieTouchData(enabled: true),
-      ),
+  Color _getColorForCategory(enumCategoria category) {
+    switch (category) {
+      case enumCategoria.comida:
+        return Colors.blue;
+      case enumCategoria.limpeza:
+        return Colors.green;
+      case enumCategoria.roupas:
+        return Colors.orange;
+      case enumCategoria.saude:
+        return Colors.red;
+      case enumCategoria.lazer:
+        return Colors.purple;
+      case enumCategoria.transporte:
+        return Colors.yellow;
+      case enumCategoria.educacao:
+        return Colors.cyan;
+      case enumCategoria.casa:
+        return Colors.brown;
+      case enumCategoria.outro:
+        return Colors.grey;
+      default:
+        return Colors.black;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<PieChartSectionData>>(
+      future: _getPieChartSections(currentMonth),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          List<PieChartSectionData>? pieChartSections = snapshot.data;
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    height: 200, // Provide a specific height for the PieChart
+                    child: PieChart(
+                      PieChartData(
+                        sections: pieChartSections,
+                        sectionsSpace: 2,
+                        centerSpaceRadius: 40,
+                        borderData: FlBorderData(show: false),
+                      ),
+                    ),
+                  ),
+                ),
+                /*...pieChartSections!.map((section) {
+                  return ListTile(
+                    leading: Icon(Icons.label, color: section.color),
+                    title: Text(section.title),
+                    trailing: Text('${section.value.toStringAsFixed(2)}'),
+                  );
+                }).toList(),*/
+              ],
+            ),
+          );
+        }
+      },
     );
   }
-
-  // Function to generate random color
-  Color getRandomColor() {
-    return Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0)
-        .withOpacity(1.0);
-  }
-}*/
+}
