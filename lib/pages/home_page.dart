@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:projeto/models/mes.dart';
 import 'package:projeto/pages/menu_despesa.dart';
-//import 'package:projeto/repositories/gastomes_repository.dart';
-//import 'package:projeto/repositories/meses_repository.dart';
-//import 'package:projeto/repositories/recebimentos_repository.dart';
 import 'dashboard_page.dart';
 import 'more_page.dart';
 import 'menu_recebimento.dart';
@@ -31,7 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: _buildPage(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.article),
             label: 'Visão geral',
@@ -60,12 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _buildPage(int selectedIndex) {
     switch (selectedIndex) {
       case 0:
-        //Mes mes = MesRepository.obterMes(DateTime.now().month);
-        return const DashboardPage(
-            //month: mes,
-            //resumoGast: GastoMensalRepository.obterGastos(mes.num),
-            //resumoReceb: RecebimentosRepository.obterRecebimentoMensal(mes.num),
-            );
+        return const DashboardPage();
       case 1:
         return MenuRecebimento();
       case 2:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'package:projeto/configs/app_settings.dart';
+import 'profile_page.dart';
 
 class MorePage extends StatelessWidget {
   const MorePage({Key? key});
@@ -58,35 +59,6 @@ class MorePage extends StatelessWidget {
             },
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ProfilePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title:
-            Text('Perfil', style: TextStyle(color: AppSettings.getCorTexto())),
-        backgroundColor: AppSettings.getCor(),
-        iconTheme: IconThemeData(color: AppSettings.getCorTexto()),
-      ),
-      body: const Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Nome: ',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              Text(
-                'Email: ',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ]),
       ),
     );
   }

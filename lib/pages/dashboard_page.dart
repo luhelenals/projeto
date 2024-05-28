@@ -26,19 +26,13 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    loadTabelas(); // Fetch initial data when the page is first built
+    loadTabelas();
   }
 
   void loadTabelas() {
     setState(() {
       resumoGast = GastoMensalRepository.obterGastos(month.num);
       resumoReceb = RecebimentosRepository.obterRecebimentoMensal(month.num);
-    });
-  }
-
-  void updateData() {
-    setState(() {
-      loadTabelas();
     });
   }
 
@@ -150,7 +144,9 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     child: Center(
                         child: Text(
-                      'Você está R\$${diferencaMes.toString()} abaixo dos seus gastos do mês passado!',
+                      diferencaMes > 0
+                          ? 'Você está R\$${diferencaMes.toString()} abaixo dos seus gastos do mês passado!'
+                          : 'Você está R\$${(-1 * diferencaMes).toString()} acima dos seus gastos do mês passado!',
                       style: const TextStyle(color: Colors.white),
                       textAlign: TextAlign.center,
                     ))),

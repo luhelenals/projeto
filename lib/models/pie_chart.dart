@@ -72,15 +72,13 @@ class GraficoGastosCategoria extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: SizedBox(
-                    height: 200, // Provide a specific height for the PieChart
-                    child: PieChart(
-                      PieChartData(
-                        sections: pieChartSections,
-                        sectionsSpace: 2,
-                        centerSpaceRadius: 40,
-                        borderData: FlBorderData(show: false),
-                      ),
-                    ),
+                    height: 250, // Provide a specific height for the PieChart
+                    child: PieChart(PieChartData(
+                      sections: pieChartSections,
+                      sectionsSpace: 4,
+                      centerSpaceRadius: 70,
+                      borderData: FlBorderData(show: false),
+                    )),
                   ),
                 ),
                 /*...pieChartSections!.map((section) {
