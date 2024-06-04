@@ -74,7 +74,13 @@ mapping = {
 def predict():
     # Get the JSON data from the request
     data = request.json
+
+    if not data or 'produtos' not in data:
+        return jsonify({"error": "Missing 'produtos' in request data"}), 400
+
     produtos = data['produtos']
+    if not isinstance(produtos, list):
+        return jsonify({"error": "'produtos' should be a list"}), 400
 
     # Transform and predict
     example_counts = vectorizer.transform(produtos)
@@ -85,4 +91,4 @@ def predict():
     return jsonify(categorias)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

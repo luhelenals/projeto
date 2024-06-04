@@ -1,8 +1,8 @@
 import requests
 import pandas as pd
 
-url = 'http://127.0.0.1:5000/predict'
-urlData = 'http://127.0.0.1:5000/extrairNota?html=http://www.fazenda.pr.gov.br/nfce/qrcode?p=41240576189406004202651140003487451000812851|2|1|1|C21AEC2D83BB16683380CDCF4015516C65DDAD15'
+url = 'http://192.168.41.38:5000/predict'
+urlData = 'http://127.0.0.1:5000/extrairNota?html=https://www.fazenda.pr.gov.br/nfce/qrcode?p=41240410358855000142650010002226261169500027|2|1|4|990ADA2DE222DA453358DD88DBAC9947CB20FB3C'
 
 data = requests.get(urlData)
 if data.status_code == 200:
