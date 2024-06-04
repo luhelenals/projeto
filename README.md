@@ -6,3 +6,5 @@ Para funcionamento adequado das chamadas de APIs do projeto:
    atualizado caso seja necessário.
    (Note que baseDados.xlsx deve estar na mesma pasta ou ter seu endereço atualizado em predictions.py);
 2. O arquivo enviaDados.py deve ser executado, também atualizando o endereço caso necessário.
+3. Pode-se utilizar para teste os urls contidos em urlsExemploProjeto.txt, substituindo-o no urlData em
+   enviaDados.py
