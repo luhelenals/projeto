@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
 import 'add_nota.dart';
+import 'package:provider/provider.dart';
+import 'package:projeto/apis/fetch_url.dart';
 
-class ChaveDeAcessoPage extends StatelessWidget {
+class ChaveDeAcessoPage extends StatefulWidget {
+  @override
+  _ChaveDeAcessoPageState createState() => _ChaveDeAcessoPageState();
+}
+
+class _ChaveDeAcessoPageState extends State<ChaveDeAcessoPage> {
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (_) => ApiService('http://127.0.0.1:5000'),
+        builder: (context, child) {
+          return HtmlProvider();
+        });
+  }
+}
+
+class HtmlProvider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final apiService = Provider.of<ApiService>(context);
+    final TextEditingController urlController = TextEditingController();
     return Scaffold(
         body: Stack(children: [
       Column(
@@ -49,10 +69,11 @@ class ChaveDeAcessoPage extends StatelessWidget {
                   ),
                 )),
             const SizedBox(height: 30),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: TextField(
-                decoration: InputDecoration(
+                controller: urlController,
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Chave de acesso',
                   fillColor: Colors.white,
@@ -63,10 +84,9 @@ class ChaveDeAcessoPage extends StatelessWidget {
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xFFDEFFDF)),
-                minimumSize:
-                    MaterialStateProperty.all<Size>(const Size(200, 50)),
-                textStyle: MaterialStateProperty.all<TextStyle>(
+                    WidgetStateProperty.all<Color>(const Color(0xFFDEFFDF)),
+                minimumSize: WidgetStateProperty.all<Size>(const Size(200, 50)),
+                textStyle: WidgetStateProperty.all<TextStyle>(
                   const TextStyle(color: Color(0xFF204522)),
                 ),
               ),
@@ -77,11 +97,30 @@ class ChaveDeAcessoPage extends StatelessWidget {
                     fontSize: 20,
                     fontWeight: FontWeight.bold),
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ResumoNotaPage()),
-                );
+              onPressed: () async {
+                final url = urlController.text;
+                if (url.isNotEmpty) {
+                  try {
+                    String content = await apiService.fetchContent(url);
+                    if (context.mounted) {
+                      // Verificar se o widget ainda está montado
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ResumoNotaPage(content: content),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      // Verificar se o widget ainda está montado
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to fetch content: $e')),
+                      );
+                    }
+                  }
+                }
               },
             ),
           ]),
@@ -100,5 +139,30 @@ class ChaveDeAcessoPage extends StatelessWidget {
         ),
       ),
     ]));
+  }
+}
+
+class ResumoNotaPage extends StatelessWidget {
+  final String content;
+
+  ResumoNotaPage({required this.content});
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> contentLines = content.split('\n');
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Content List View'),
+      ),
+      body: ListView.builder(
+        itemCount: contentLines.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(contentLines[index]),
+          );
+        },
+      ),
+    );
   }
 }

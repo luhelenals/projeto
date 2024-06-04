@@ -39,7 +39,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     // cálculo de variáveis
-    if (resumoGast.valorTotal == 0) {
+    if (resumoGast.despesas.isNotEmpty) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

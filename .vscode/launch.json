@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Flutter Web",
+        "request": "launch",
+        "type": "dart",
+        "flutterMode": "debug",
+        "program": "lib/main.dart", // adjust this path if your main Dart file is different
+        "args": [
+          "--web-port=5000" // You can specify a port number if desired
+        ]
+      }
+    ]
+  }
+  

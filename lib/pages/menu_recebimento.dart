@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto/models/recebimento.dart';
 import 'package:projeto/pages/add_recebimento_page.dart';
 import 'package:projeto/repositories/meses_repository.dart';
 import 'package:projeto/repositories/recebimentos_repository.dart';
@@ -60,11 +61,25 @@ class MenuRecebimento extends StatelessWidget {
                           right: 0,
                           child: IconButton(
                             onPressed: () {
-                              /*Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditarRecebimento()),
-                              );*/
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return EditarRecebimentoPopup(
+                                    recebimento:
+                                        tabela.listaRecebimentos[linha],
+                                    onSave: (descricao, data, valor) {
+                                      // Atualizar o recebimento aqui
+                                      tabela.listaRecebimentos[linha]
+                                          .descricao = descricao;
+                                      tabela.listaRecebimentos[linha].data =
+                                          data;
+                                      tabela.listaRecebimentos[linha].valor =
+                                          valor;
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                },
+                              );
                             },
                             icon: const Icon(Icons.edit,
                                 color: Color(0xFF204522)),
@@ -104,6 +119,93 @@ class MenuRecebimento extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class EditarRecebimentoPopup extends StatefulWidget {
+  final Recebimento recebimento;
+  final Function(String, DateTime, double) onSave;
+
+  EditarRecebimentoPopup({required this.recebimento, required this.onSave});
+
+  @override
+  _EditarRecebimentoPopupState createState() => _EditarRecebimentoPopupState();
+}
+
+class _EditarRecebimentoPopupState extends State<EditarRecebimentoPopup> {
+  late TextEditingController _descricaoController;
+  late TextEditingController _valorController;
+  late DateTime _data;
+
+  @override
+  void initState() {
+    super.initState();
+    _descricaoController =
+        TextEditingController(text: widget.recebimento.descricao);
+    _valorController =
+        TextEditingController(text: widget.recebimento.valor.toString());
+    _data = widget.recebimento.data;
+  }
+
+  @override
+  void dispose() {
+    _descricaoController.dispose();
+    _valorController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Editar Recebimento'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _descricaoController,
+            decoration: InputDecoration(labelText: 'Descrição'),
+          ),
+          TextField(
+            controller: _valorController,
+            decoration: InputDecoration(labelText: 'Valor'),
+            keyboardType: TextInputType.number,
+          ),
+          ListTile(
+            title: Text("Data: ${_data.day}/${_data.month}/${_data.year}"),
+            trailing: Icon(Icons.calendar_today),
+            onTap: () async {
+              DateTime? picked = await showDatePicker(
+                context: context,
+                initialDate: _data,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+              );
+              if (picked != null) {
+                setState(() {
+                  _data = picked;
+                });
+              }
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          child: Text('Cancelar'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: Text('Salvar'),
+          onPressed: () {
+            String descricao = _descricaoController.text;
+            double valor = double.parse(_valorController.text);
+            widget.onSave(descricao, _data, valor);
+          },
+        ),
+      ],
     );
   }
 }
