@@ -8,11 +8,12 @@ class LogInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return SizedBox(
+      child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Image.asset('assets/logo_resized.png'),
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: TextField(
             decoration: InputDecoration(
@@ -23,7 +24,7 @@ class LogInPage extends StatelessWidget {
             ),
           ),
         ),
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: TextField(
             decoration: InputDecoration(
@@ -40,9 +41,9 @@ class LogInPage extends StatelessWidget {
         ElevatedButton(
           style: ButtonStyle(
             backgroundColor:
-                MaterialStateProperty.all<Color>(const Color(0xFFDEFFDF)),
-            minimumSize: MaterialStateProperty.all<Size>(const Size(200, 50)),
-            textStyle: MaterialStateProperty.all<TextStyle>(
+                WidgetStateProperty.all<Color>(const Color(0xFFDEFFDF)),
+            minimumSize: WidgetStateProperty.all<Size>(const Size(200, 50)),
+            textStyle: WidgetStateProperty.all<TextStyle>(
               const TextStyle(color: Color(0xFF204522)),
             ),
           ),
@@ -111,6 +112,6 @@ class LogInPage extends StatelessWidget {
           ],
         )
       ],
-    );
+    ));
   }
 }

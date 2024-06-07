@@ -5,10 +5,13 @@ class Despesa {
   String descricao;
   Categoria categoria;
   DateTime data;
+  bool exibir;
 
-  Despesa(
-      {required this.valor,
-      required this.descricao,
-      required this.categoria,
-      required this.data});
+  Despesa({
+    required this.valor,
+    required this.descricao,
+    required this.categoria,
+    required this.data,
+    this.exibir = true
+  });
 }

@@ -34,8 +34,10 @@ class MenuDespesa extends StatelessWidget {
                 itemBuilder: (BuildContext context, int linha) {
                   return Card(
                     color: const Color(0xFFDEFFDF),
-                    child: Stack(children: [
-                      Column(children: [
+                    child: Stack(
+                      children: [
+                      Column(
+                        children: [
                         const SizedBox(height: 10),
                         Center(
                           child: Text(

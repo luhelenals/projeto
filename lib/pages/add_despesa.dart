@@ -131,11 +131,11 @@ class _AddDespesaPageState extends State<AddDespesaPage> {
                 Center(
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
+                      backgroundColor: WidgetStateProperty.all<Color>(
                           const Color(0xFFDEFFDF)),
                       minimumSize:
-                          MaterialStateProperty.all<Size>(const Size(200, 50)),
-                      textStyle: MaterialStateProperty.all<TextStyle>(
+                          WidgetStateProperty.all<Size>(const Size(200, 50)),
+                      textStyle: WidgetStateProperty.all<TextStyle>(
                         const TextStyle(color: Color(0xFF204522)),
                       ),
                     ),

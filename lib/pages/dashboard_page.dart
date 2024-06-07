@@ -8,6 +8,7 @@ import 'package:projeto/repositories/meses_repository.dart';
 import 'package:projeto/repositories/recebimentos_repository.dart';
 import 'package:projeto/models/mes.dart';
 import 'package:projeto/models/pie_chart.dart';
+import 'package:share/share.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({
@@ -39,7 +40,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     // cálculo de variáveis
-    if (resumoGast.despesas.isNotEmpty) {
+    if (resumoGast.despesas.isEmpty) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -145,8 +146,8 @@ class _DashboardPageState extends State<DashboardPage> {
                     child: Center(
                         child: Text(
                       diferencaMes > 0
-                          ? 'Você está R\$${diferencaMes.toString()} abaixo dos seus gastos do mês passado!'
-                          : 'Você está R\$${(-1 * diferencaMes).toString()} acima dos seus gastos do mês passado!',
+                          ? 'Você está R\$${diferencaMes.toStringAsFixed(2)} abaixo dos seus gastos do mês passado!'
+                          : 'Você está R\$${(-1 * diferencaMes).toStringAsFixed(2)} acima dos seus gastos do mês passado!',
                       style: const TextStyle(color: Colors.white),
                       textAlign: TextAlign.center,
                     ))),
@@ -162,7 +163,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     child: Center(
                       child: Text(
-                          'Seu maior gasto do mês até agora foi com ${itemMaiorGasto.toString()} (R\$${valorItemMaiorGasto.toString()})',
+                          'Seu maior gasto do mês até agora foi com ${itemMaiorGasto.toString()} (R\$${valorItemMaiorGasto.toStringAsFixed(2)})',
                           style: const TextStyle(color: Colors.white),
                           textAlign: TextAlign.center),
                     )),
@@ -173,6 +174,12 @@ class _DashboardPageState extends State<DashboardPage> {
                 currentMonth: MesRepository.obterMesAtual().num),
             const SizedBox(height: 30),
             MesesButton(),
+            ElevatedButton(
+              onPressed: () {
+                Share.share('Check out this awesome app: [YOUR APP LINK HERE]');
+              },
+              child: Text('Compartilhar'),
+            ),
           ],
         ),
       );
@@ -227,7 +234,8 @@ class _DetailedSpendingState extends State<DetailedSpendingPage> {
         RecebimentosRepository.obterRecebimentoMensal(widget.gastoMes.mes.num);
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.gastoMes.mes.nome),
+          title: Text(widget.gastoMes.mes.nome, style: TextStyle(color: AppSettings.getCorTexto())),
+          backgroundColor: AppSettings.getCor(),
         ),
         body: Center(
           child: Column(

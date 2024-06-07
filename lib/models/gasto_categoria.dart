@@ -35,6 +35,31 @@ extension CategoriaExtension on enumCategoria {
         return '';
     }
   }
+
+  static enumCategoria fromString(String str) {
+    switch (str) {
+      case 'Comida/bebida':
+        return enumCategoria.comida;
+      case 'Limpeza':
+        return enumCategoria.limpeza;
+      case 'Roupa/acessório':
+        return enumCategoria.roupas;
+      case 'Saúde/bem-estar':
+        return enumCategoria.saude;
+      case 'Lazer':
+        return enumCategoria.lazer;
+      case 'Transporte':
+        return enumCategoria.transporte;
+      case 'Educação':
+        return enumCategoria.educacao;
+      case 'Casa':
+        return enumCategoria.casa;
+      case 'Outro':
+        return enumCategoria.outro;
+      default:
+        throw ArgumentError('Invalid enumCategoria value');
+    }
+  }
 }
 
 class Categoria {

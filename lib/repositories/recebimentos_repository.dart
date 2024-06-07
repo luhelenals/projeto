@@ -12,6 +12,15 @@ class RecebimentosRepository {
           valor: 600.50, data: DateTime(2024, 5, 15), descricao: 'Bolsa'),
       Recebimento(
           valor: 20.50, data: DateTime(2024, 5, 15), descricao: 'Cashback'),
+    ], mes: MesRepository.obterMes(6)),
+    RecebimentoMensal(listaRecebimentos: [
+      Recebimento(valor: 500.23, data: DateTime(2024, 5, 6), descricao: 'pix'),
+      Recebimento(
+          valor: 2780.0, data: DateTime(2024, 5, 1), descricao: 'Salário'),
+      Recebimento(
+          valor: 600.50, data: DateTime(2024, 5, 15), descricao: 'Bolsa'),
+      Recebimento(
+          valor: 20.50, data: DateTime(2024, 5, 15), descricao: 'Cashback'),
     ], mes: MesRepository.obterMes(5)),
     RecebimentoMensal(listaRecebimentos: [
       Recebimento(

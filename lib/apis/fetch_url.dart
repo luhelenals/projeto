@@ -6,17 +6,38 @@ class ApiService {
 
   ApiService(this.baseUrl);
 
-  Future<String> fetchContent(String url) async {
+ Future<Map<String, dynamic>> fetchContent(String url) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/?html=$url'), // Passing the URL with query parameter
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      Uri.parse("$baseUrl?html=$url"),
     );
 
     if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
-      return jsonResponse['content'];
+      final jsonResponse = jsonDecode(response.body)['content'];
+      final produtos = jsonResponse['produtos'];
+
+      final postData = {'produtos': produtos};
+
+      final postResponse = await http.post(
+        Uri.parse("http://192.168.100.17:5000/predict"),
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"},
+        body: jsonEncode(postData),
+      );
+
+      if (postResponse.statusCode == 200) {
+        final predictions = jsonDecode(postResponse.body);
+        final results = {
+          'produtos': produtos,
+          'categoria': predictions,
+          'data': jsonResponse['data'],
+          'preços': jsonResponse['preços']
+        };
+        return results;
+      }
+      else {
+        throw Exception('Failed to get predictions: ${postResponse.statusCode} ${postResponse.body}');
+      }
     } else {
       throw Exception('Failed to load content');
     }

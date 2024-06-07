@@ -181,6 +181,44 @@ class GastoMensalRepository {
         data: DateTime(2024, 05, 25),
       )
     ]),
+    GastoMensal(mes: MesRepository.obterMes(6), despesas: [
+      Despesa(
+        valor: 54.30,
+        descricao: 'Almoço',
+        categoria: Categoria(categoria: enumCategoria.limpeza),
+        data: DateTime(2024, 1, 3),
+      ),
+      Despesa(
+        valor: 120.0,
+        descricao: 'Produtos de Limpeza',
+        categoria: Categoria(categoria: enumCategoria.limpeza),
+        data: DateTime(2024, 01, 08),
+      ),
+      Despesa(
+        valor: 200.0,
+        descricao: 'Roupas',
+        categoria: Categoria(
+          categoria: enumCategoria.roupas,
+        ),
+        data: DateTime(2024, 01, 15),
+      ),
+      Despesa(
+        valor: 80.0,
+        descricao: 'Consulta Médica',
+        categoria: Categoria(
+          categoria: enumCategoria.saude,
+        ),
+        data: DateTime(2024, 01, 20),
+      ),
+      Despesa(
+        valor: 50.0,
+        descricao: 'Cinema',
+        categoria: Categoria(
+          categoria: enumCategoria.lazer,
+        ),
+        data: DateTime(2024, 01, 25),
+      )
+    ]),
   ];
 
   static GastoMensal obterGastos(int num) {
