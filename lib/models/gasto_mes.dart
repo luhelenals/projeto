@@ -17,14 +17,14 @@ class GastoMensal {
   }
 
   List<double> pegarValoresDespesas(List<Despesa> lista) {
-    List<enumCategoria> categorias = enumCategoria.values;
-    int qtCat = categorias.length;
-    List<double> valoresCategoria = List.filled(qtCat, 0);
-    for (int i = 0; i < lista.length; i++) {
-      int pos = categorias.indexOf(lista[i].categoria.categoria);
-      valoresCategoria[pos] += lista[i].valor;
-    }
-    return valoresCategoria;
+  List<double> valoresCategoria = List.filled(enumCategoria.values.length, 0);
+
+  for (int i = 0; i < lista.length; i++) {
+    int pos = enumCategoria.values.indexOf(lista[i].categoria.categoria);
+    valoresCategoria[pos] += lista[i].valor;
+  }
+
+  return valoresCategoria;
   }
 
   static double atualizarTotal(List<double> despesas) {

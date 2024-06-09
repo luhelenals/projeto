@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:projeto/configs/app_settings.dart';
+import 'package:projeto/models/gasto_categoria.dart';
 import 'package:projeto/models/gasto_mes.dart';
 import 'package:projeto/models/recebimento_mes.dart';
 import 'package:projeto/repositories/gastomes_repository.dart';
@@ -8,7 +9,6 @@ import 'package:projeto/repositories/meses_repository.dart';
 import 'package:projeto/repositories/recebimentos_repository.dart';
 import 'package:projeto/models/mes.dart';
 import 'package:projeto/models/pie_chart.dart';
-import 'package:share/share.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({
@@ -174,12 +174,6 @@ class _DashboardPageState extends State<DashboardPage> {
                 currentMonth: MesRepository.obterMesAtual().num),
             const SizedBox(height: 30),
             MesesButton(),
-            ElevatedButton(
-              onPressed: () {
-                Share.share('Check out this awesome app: [YOUR APP LINK HERE]');
-              },
-              child: Text('Compartilhar'),
-            ),
           ],
         ),
       );
