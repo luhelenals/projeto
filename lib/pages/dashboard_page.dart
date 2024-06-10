@@ -228,8 +228,8 @@ class _DetailedSpendingState extends State<DetailedSpendingPage> {
         RecebimentosRepository.obterRecebimentoMensal(widget.gastoMes.mes.num);
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.gastoMes.mes.nome, style: TextStyle(color: AppSettings.getCorTexto())),
-          backgroundColor: AppSettings.getCor(),
+          title: Text(widget.gastoMes.mes.nome, style: TextStyle(color: AppSettings.getCorSecundaria())),
+          backgroundColor: AppSettings.getCorTema(),
         ),
         body: Center(
           child: Column(
@@ -318,9 +318,9 @@ class DetailedMonthPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Gastos por mês',
-            style: TextStyle(color: AppSettings.getCorTexto())),
-        backgroundColor: AppSettings.getCor(),
-        iconTheme: IconThemeData(color: AppSettings.getCorTexto()),
+            style: TextStyle(color: AppSettings.getCorSecundaria())),
+        backgroundColor: AppSettings.getCorTema(),
+        iconTheme: IconThemeData(color: AppSettings.getCorSecundaria()),
       ),
       body: ListView.separated(
         itemBuilder: (BuildContext context, int linha) {

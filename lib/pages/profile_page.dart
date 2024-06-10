@@ -1,7 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ProfilePage extends StatelessWidget {
-  final String currentName = "João Silva";
+class ProfilePage extends StatefulWidget {
+const ProfilePage({Key? key}) : super(key: key);
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final String currentName = "João Silva";//_auth.currentUser!.email;
   final String currentEmail = "joao.silva@example.com";
   final String currentBirthDate = "15/05/1990";
 

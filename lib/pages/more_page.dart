@@ -1,10 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'package:projeto/configs/app_settings.dart';
 import 'profile_page.dart';
 
-class MorePage extends StatelessWidget {
-  const MorePage({Key? key});
+class MorePage extends StatefulWidget {
+  const MorePage({Key? key}) : super(key: key);
+
+  @override
+  State<MorePage> createState() => _MorePageState();
+}
+
+class _MorePageState extends State<MorePage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,8 +60,8 @@ class MorePage extends StatelessWidget {
             leading: const Icon(Icons.logout),
             title: const Text('Sair'),
             onTap: () {
-              // Navigate to settings page
-              Navigator.pop(
+              _auth.signOut();
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const LogInPage()),
               );
@@ -70,9 +79,9 @@ class NotificationsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Notificações',
-            style: TextStyle(color: AppSettings.getCorTexto())),
-        backgroundColor: AppSettings.getCor(),
-        iconTheme: IconThemeData(color: AppSettings.getCorTexto()),
+            style: TextStyle(color: AppSettings.getCorSecundaria())),
+        backgroundColor: AppSettings.getCorTema(),
+        iconTheme: IconThemeData(color: AppSettings.getCorSecundaria()),
       ),
       body: const Center(
         child: Text('implementar'),
@@ -86,12 +95,12 @@ class ThemePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tema', style: TextStyle(color: AppSettings.getCorTexto())),
-        backgroundColor: AppSettings.getCor(),
-        iconTheme: IconThemeData(color: AppSettings.getCorTexto()),
+        title: Text('Tema', style: TextStyle(color: AppSettings.getCorSecundaria())),
+        backgroundColor: AppSettings.getCorTema(),
+        iconTheme: IconThemeData(color: AppSettings.getCorSecundaria()),
       ),
-      body: Center(
-        child: const Text('implementar'),
+      body: const Center(
+        child: Text('implementar'),
       ),
     );
   }

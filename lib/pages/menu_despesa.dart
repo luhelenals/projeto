@@ -14,10 +14,10 @@ class MenuDespesa extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Gastos: ${MesRepository.obterMesAtual().nome}',
-            style: TextStyle(color: AppSettings.getCorTexto())),
+            style: TextStyle(color: AppSettings.getCorSecundaria())),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        backgroundColor: AppSettings.getCor(),
+        backgroundColor: AppSettings.getCorTema(),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

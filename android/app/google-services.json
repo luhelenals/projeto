@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "393345333403",
+    "project_id": "lus-app-bd8f0",
+    "storage_bucket": "lus-app-bd8f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393345333403:android:2493a4b66d9f339fa82e3e",
+        "android_client_info": {
+          "package_name": "com.example.projeto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUi5gSo4orUnj7yQswLSDjmW39rE9mcnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AppSettings {
-  static Color getCor() {
+  static Color getCorTema() {
     return const Color(0xFF204522);
   }
 
-  static Color getCorTexto() {
+  static Color getCorSecundaria() {
     return Colors.white;
+  }
+
+  static Color getCorFundo() {
+    return const Color(0xFFBADBC0);
   }
 }
 /*import 'package:hive_flutter/adapters.dart';

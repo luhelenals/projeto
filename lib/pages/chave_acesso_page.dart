@@ -194,8 +194,8 @@ class _ResumoNotaPageState extends State<ResumoNotaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Resumo das compras de $data', style: TextStyle(color: AppSettings.getCorTexto())),
-        backgroundColor: AppSettings.getCor(),
+        title: Text('Resumo das compras de $data', style: TextStyle(color: AppSettings.getCorSecundaria())),
+        backgroundColor: AppSettings.getCorTema(),
         automaticallyImplyLeading: false,
       ),
       body: Column(

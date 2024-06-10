@@ -14,9 +14,9 @@ class MenuRecebimento extends StatelessWidget {
       appBar: AppBar(
           automaticallyImplyLeading: false,
           centerTitle: true,
-          backgroundColor: AppSettings.getCor(),
+          backgroundColor: AppSettings.getCorTema(),
           title: Text('Recebimentos: ${MesRepository.obterMesAtual().nome}',
-              style: TextStyle(color: AppSettings.getCorTexto()))),
+              style: TextStyle(color: AppSettings.getCorSecundaria()))),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
