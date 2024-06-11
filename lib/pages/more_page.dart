@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'login_page.dart';
+import '../authentication/login_page.dart';
 import 'package:projeto/configs/app_settings.dart';
 import 'profile_page.dart';
 
@@ -27,7 +27,7 @@ class _MorePageState extends State<MorePage> {
               // Navigate to profile page
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
               );
             },
           ),

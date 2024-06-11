@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto/configs/app_settings.dart';
 import 'first_access.dart';
-import 'password_reset.dart';
-import 'home_page.dart';
+import '../pages/password_reset.dart';
+import '../pages/home_page.dart';
 
 class LogInPage extends StatefulWidget {
   const LogInPage({Key? key}) : super(key: key);
@@ -142,7 +142,7 @@ class _LogInPageState extends State<LogInPage> {
                           style: TextStyle(
                             color: Colors.transparent,
                             shadows: [
-                              Shadow(color: AppSettings.getCorTema(), offset: Offset(0, -3))
+                              Shadow(color: AppSettings.getCorTema(), offset: const Offset(0, -3))
                             ],
                             decoration: TextDecoration.underline,
                             decorationColor: AppSettings.getCorTema(),
@@ -163,7 +163,7 @@ class _LogInPageState extends State<LogInPage> {
                             style: TextStyle(
                               color: Colors.transparent,
                               shadows: [
-                                Shadow(color: AppSettings.getCorTema(), offset: Offset(0, -3))
+                                Shadow(color: AppSettings.getCorTema(), offset: const Offset(0, -3))
                               ],
                               decoration: TextDecoration.underline,
                               decorationColor: AppSettings.getCorTema(),

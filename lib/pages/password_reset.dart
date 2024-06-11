@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
+import 'package:projeto/authentication/login_page.dart';
 
 class PasswordResetScreen extends StatelessWidget {
   const PasswordResetScreen({Key? key});
@@ -14,7 +14,7 @@ class PasswordResetScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               const Padding(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8),
                 child: TextField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -26,13 +26,13 @@ class PasswordResetScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
+                  backgroundColor: WidgetStateProperty.all<Color>(
                     const Color(0xFFDEFFDF),
                   ),
-                  minimumSize: MaterialStateProperty.all<Size>(
+                  minimumSize: WidgetStateProperty.all<Size>(
                     const Size(200, 50),
                   ),
-                  textStyle: MaterialStateProperty.all<TextStyle>(
+                  textStyle: WidgetStateProperty.all<TextStyle>(
                     const TextStyle(color: Color(0xFF204522)),
                   ),
                 ),

@@ -1,5 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:projeto/authentication/current_user.dart';
+import 'package:projeto/configs/app_settings.dart';
 
 class ProfilePage extends StatefulWidget {
 const ProfilePage({Key? key}) : super(key: key);
@@ -9,65 +11,81 @@ const ProfilePage({Key? key}) : super(key: key);
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final String currentName = "João Silva";//_auth.currentUser!.email;
-  final String currentEmail = "joao.silva@example.com";
-  final String currentBirthDate = "15/05/1990";
+  late Usuario usuario;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    usuario = Usuario();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    await usuario.fetchUserData();
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppSettings.getCorFundo(),
       appBar: AppBar(
         title: Text('Configurações do Perfil',
-            style: TextStyle(color: Colors.white)),
+            style: TextStyle(color: AppSettings.getCorSecundaria())),
         centerTitle: true,
-        backgroundColor: Colors.green,
+        backgroundColor: AppSettings.getCorTema(),
       ),
-      body: Padding(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundColor: Colors.grey[300],
+              backgroundColor: AppSettings.getCorSecundaria(),
               child: IconButton(
-                icon: Icon(Icons.camera_alt, color: Colors.white),
+                icon: Icon(Icons.camera_alt, color: AppSettings.getCorTema()),
                 onPressed: () {
                   // Função para adicionar foto
                 },
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ListTile(
               title:
-                  Text('Nome', style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text(currentName),
+                  const Text('Nome', style: TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text(usuario.nome),
               trailing: IconButton(
-                icon: Icon(Icons.edit),
+                icon: const Icon(Icons.edit),
                 onPressed: () {
                   // Função para editar nome
-                  _showEditDialog(context, 'Nome', currentName, (newValue) {
+                  _showEditDialog(context, 'Nome', usuario.nome, (newValue) {
                     // Atualizar nome
                   });
                 },
               ),
             ),
-            Divider(),
+            Divider(color: AppSettings.getCorTema()),
             ListTile(
               title:
-                  Text('Email', style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text(currentEmail),
+                  const Text('Email', style: TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text(usuario.email),
               trailing: IconButton(
-                icon: Icon(Icons.edit),
+                icon: const Icon(Icons.edit),
                 onPressed: () {
                   // Função para editar email
-                  _showEditDialog(context, 'Email', currentEmail, (newValue) {
+                  _showEditDialog(context, 'Email', usuario.email, (newValue) {
                     // Atualizar email
                   });
                 },
               ),
             ),
-            Divider(),
+            const SizedBox(height: 20),
+            /* Divider(),
             ListTile(
               title: Text('Data de Nascimento',
                   style: TextStyle(fontWeight: FontWeight.bold)),
@@ -84,40 +102,40 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               ),
             ),
-            Divider(),
+            Divider(),*/
             TextFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Senha Atual',
                 border: OutlineInputBorder(),
               ),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Nova Senha',
                 border: OutlineInputBorder(),
               ),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Confirmar Nova Senha',
                 border: OutlineInputBorder(),
               ),
               obscureText: true,
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                minimumSize: MaterialStateProperty.all<Size>(Size(200, 50)),
-                textStyle: MaterialStateProperty.all<TextStyle>(
-                  TextStyle(color: Colors.white, fontSize: 20),
+                backgroundColor: WidgetStateProperty.all<Color>(AppSettings.getCorTema()),
+                minimumSize: WidgetStateProperty.all<Size>(const Size(200, 50)),
+                textStyle: WidgetStateProperty.all<TextStyle>(
+                  const TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
-              child: Text('Salvar Alterações'),
+              child: Text('Salvar Alterações', style: TextStyle(color: AppSettings.getCorSecundaria())),
               onPressed: () {
                 // Função para salvar as alterações do perfil
               },
@@ -139,19 +157,19 @@ class _ProfilePageState extends State<ProfilePage> {
           title: Text('Editar $field'),
           content: TextField(
             controller: controller,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
             ),
           ),
           actions: [
             TextButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child: Text('Salvar'),
+              child: const Text('Salvar'),
               onPressed: () {
                 onSave(controller.text);
                 Navigator.of(context).pop();

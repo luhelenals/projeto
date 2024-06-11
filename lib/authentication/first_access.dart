@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto/configs/app_settings.dart';
-import 'home_page.dart';
+import '../pages/home_page.dart';
 
 class FirstAccessScreen extends StatefulWidget {
   const FirstAccessScreen({Key? key}) : super(key: key);
