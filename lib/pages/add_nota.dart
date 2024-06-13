@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/configs/app_settings.dart';
 import 'package:projeto/pages/menu_despesa.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'home_page.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class AddNotaPage extends StatefulWidget {
   const AddNotaPage({Key? key}) : super(key: key);
@@ -12,20 +12,68 @@ class AddNotaPage extends StatefulWidget {
 }
 
 class _AddNotaPageState extends State<AddNotaPage> {
-  String link = '';
+  GlobalKey qrcodeKey = GlobalKey(debugLabel: 'QR');
+  QRViewController? controller;
+  String result = '';
 
-  Future<void> readQRCode() async {
-    try {
-      String code = await FlutterBarcodeScanner.scanBarcode(
-        "#FFFFFF",
-        "Cancelar",
-        false,
-        ScanMode.QR
-      );
-      setState(() => link = code != '-1' ? code : 'Não validado');
-    } catch(e) {
-      print(e);
-    }
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  void _onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        result = scanData.code!;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(children: [
+        Expanded(
+          flex: 5,
+          child: QRView(
+            key: qrcodeKey,
+            onQRViewCreated: _onQRViewCreated,
+            overlay: QrScannerOverlayShape(
+                borderColor: Colors.white,
+                borderRadius: 10,
+                borderLength: 30,
+                borderWidth: 10,
+                cutOutSize: 300,
+              ),
+          )),
+        Expanded(
+          child: Center(
+            child: Text("Resultado: $result")))
+      ])
+    );
+  }
+}
+
+/* class _AddNotaPageState extends State<AddNotaPage> {
+  GlobalKey qrcodeKey = GlobalKey(debugLabel: 'QR');
+  QRViewController? controller;
+  String result = '';
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  void _onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        result = scanData.code!;
+      });
+    });
   }
 
   @override
@@ -76,8 +124,8 @@ class _AddNotaPageState extends State<AddNotaPage> {
                     ),
                   )),
               const SizedBox(height: 30),
-              if(link != '')
-                Text('link: $link'),
+              /* if(link != '')
+                Text('link: $link'), */
               /* Container(
                 width: 300,
                 height: 300,
@@ -88,7 +136,16 @@ class _AddNotaPageState extends State<AddNotaPage> {
                   color: Colors.white,
                 ),
               ), */
-              ElevatedButton(onPressed: readQRCode, child: const Text("Ler QR Code"))
+              //ElevatedButton(onPressed: readQRCode, child: const Text("Ler QR Code"))
+              Expanded(
+                flex: 5,
+                child: QRView(
+                  key: qrcodeKey,
+                  onQRViewCreated: _onQRViewCreated,
+                )),
+              Expanded(
+                child: Center(
+                  child: Text("Resultado: $result")))
             ]),
       ),
       Positioned(
@@ -106,7 +163,7 @@ class _AddNotaPageState extends State<AddNotaPage> {
       ),
     ]));
   }
-}
+} */
 
 class ResumoNotaPage extends StatelessWidget {
   @override
