@@ -1,6 +1,6 @@
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:projeto/authentication/current_user.dart';
+import 'package:projeto/authentication/auth_service.dart';
 import 'package:projeto/configs/app_settings.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -11,13 +11,13 @@ const ProfilePage({Key? key}) : super(key: key);
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late Usuario usuario;
+  late AuthService usuario;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    usuario = Usuario();
+    usuario = AuthService();
     fetchUserData();
   }
 

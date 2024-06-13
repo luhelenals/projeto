@@ -1,8 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:projeto/configs/app_settings.dart';
 import 'package:projeto/pages/menu_despesa.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'home_page.dart';
 
-class AddNotaPage extends StatelessWidget {
+class AddNotaPage extends StatefulWidget {
+  const AddNotaPage({Key? key}) : super(key: key);
+
+  @override
+  State<AddNotaPage> createState() => _AddNotaPageState();
+}
+
+class _AddNotaPageState extends State<AddNotaPage> {
+  String link = '';
+
+  Future<void> readQRCode() async {
+    try {
+      String code = await FlutterBarcodeScanner.scanBarcode(
+        "#FFFFFF",
+        "Cancelar",
+        false,
+        ScanMode.QR
+      );
+      setState(() => link = code != '-1' ? code : 'Não validado');
+    } catch(e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,12 +44,12 @@ class AddNotaPage extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: const Color(0xFF204522),
+                  color: AppSettings.getCorTema(),
                 ),
-                child: const Text(
+                child: Text(
                   'Aponte sua câmera para o QR Code ou digite a chave de acesso da sua nota fiscal para cadastrar seus itens automaticamente!',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppSettings.getCorSecundaria(),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -32,27 +57,28 @@ class AddNotaPage extends StatelessWidget {
               const SizedBox(height: 30),
               TextButton(
                   onPressed: () {
-                    // Navigate to the password reset screen
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => OndeEncontroIssoPage()),
                     );
                   },
-                  child: const Text(
+                  child: Text(
                     'Onde encontro isso?',
                     style: TextStyle(
                       color: Colors.transparent,
                       shadows: [
-                        Shadow(color: Color(0xFF204522), offset: Offset(0, -3))
+                        Shadow(color: AppSettings.getCorTema(), offset: const Offset(0, -3))
                       ],
                       decoration: TextDecoration.underline,
-                      decorationColor: Color(0xFF204522),
+                      decorationColor: AppSettings.getCorTema(),
                       decorationThickness: 2,
                     ),
                   )),
               const SizedBox(height: 30),
-              Container(
+              if(link != '')
+                Text('link: $link'),
+              /* Container(
                 width: 300,
                 height: 300,
                 padding:
@@ -61,7 +87,8 @@ class AddNotaPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white,
                 ),
-              ),
+              ), */
+              ElevatedButton(onPressed: readQRCode, child: const Text("Ler QR Code"))
             ]),
       ),
       Positioned(
@@ -69,13 +96,12 @@ class AddNotaPage extends StatelessWidget {
         left: 0,
         child: IconButton(
           onPressed: () {
-            // Navigate to the password reset screen
             Navigator.pop(
               context,
               MaterialPageRoute(builder: (context) => MenuDespesa()),
             );
           },
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF204522)),
+          icon: Icon(Icons.arrow_back, color: AppSettings.getCorTema()),
         ),
       ),
     ]));
@@ -91,11 +117,11 @@ class ResumoNotaPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-            const Text(
+            Text(
               'Resumo das suas compras',
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: Color(0xFF204522),
+                  color: AppSettings.getCorTema(),
                   fontWeight: FontWeight.bold,
                   fontSize: 18),
             ),
@@ -105,7 +131,7 @@ class ResumoNotaPage extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: const Color(0xFF204522),
+                  color: AppSettings.getCorTema(),
                 ),
                 child: SingleChildScrollView(
                   child: Container(
@@ -175,17 +201,17 @@ class ResumoNotaPage extends StatelessWidget {
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xFFDEFFDF)),
+                    WidgetStateProperty.all<Color>(const Color(0xFFDEFFDF)),
                 minimumSize:
-                    MaterialStateProperty.all<Size>(const Size(200, 50)),
-                textStyle: MaterialStateProperty.all<TextStyle>(
-                  const TextStyle(color: Color(0xFF204522)),
+                    WidgetStateProperty.all<Size>(const Size(200, 50)),
+                textStyle: WidgetStateProperty.all<TextStyle>(
+                  TextStyle(color: AppSettings.getCorTema()),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Salvar',
                 style: TextStyle(
-                    color: Color(0xFF204522),
+                    color: AppSettings.getCorTema(),
                     fontSize: 20,
                     fontWeight: FontWeight.bold),
               ),
@@ -229,7 +255,7 @@ class OndeEncontroIssoPage extends StatelessWidget {
               MaterialPageRoute(builder: (context) => AddNotaPage()),
             );
           },
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF204522)),
+          icon: Icon(Icons.arrow_back, color: AppSettings.getCorTema()),
         ),
       ),
     ]));

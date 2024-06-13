@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:projeto/authentication/auth_service.dart';
 import 'package:projeto/authentication/login_page.dart';
+import 'package:projeto/configs/app_settings.dart';
 
-class PasswordResetScreen extends StatelessWidget {
-  const PasswordResetScreen({Key? key});
+class PasswordResetScreen extends StatefulWidget {
+  const PasswordResetScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PasswordResetScreen> createState() => _PasswordResetScreenState();
+}
+
+class _PasswordResetScreenState extends State<PasswordResetScreen> {
+  final _auth = AuthService();
+  final _emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +23,11 @@ class PasswordResetScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: TextField(
-                  decoration: InputDecoration(
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'Email',
                     fillColor: Colors.white,
@@ -27,20 +38,24 @@ class PasswordResetScreen extends StatelessWidget {
               ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all<Color>(
-                    const Color(0xFFDEFFDF),
+                    AppSettings.getCorFundo(),
                   ),
                   minimumSize: WidgetStateProperty.all<Size>(
                     const Size(200, 50),
                   ),
                   textStyle: WidgetStateProperty.all<TextStyle>(
-                    const TextStyle(color: Color(0xFF204522)),
+                    TextStyle(color: AppSettings.getCorTema()),
                   ),
                 ),
-                onPressed: () => forgotPasswordEmailDialogue(context),
-                child: const Text(
+                onPressed: (){
+                  _auth.sendPasswordResetLink(_emailController.text);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Email de recuperação de senha enviado.')));
+                },
+                child: Text(
                   'Enviar',
                   style: TextStyle(
-                      color: Color(0xFF204522),
+                      color: AppSettings.getCorTema(),
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
@@ -55,10 +70,10 @@ class PasswordResetScreen extends StatelessWidget {
                 // Navigate to the password reset screen
                 Navigator.pop(
                   context,
-                  MaterialPageRoute(builder: (context) => LogInPage()),
+                  MaterialPageRoute(builder: (context) => const LogInPage()),
                 );
               },
-              icon: const Icon(Icons.arrow_back, color: Color(0xFF204522)),
+              icon: Icon(Icons.arrow_back, color: AppSettings.getCorTema()),
             ),
           ),
         ],

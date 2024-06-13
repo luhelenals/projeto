@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-class Usuario {
+class AuthService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   late String email;
   late String nome;
 
-  Usuario();
+  AuthService();
 
   Future<void> fetchUserData() async {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
 
     if (user != null) {
@@ -16,6 +16,14 @@ class Usuario {
     } else {
       email = 'No Email';
       nome = 'No Name';
+    }
+  }
+
+  Future<void> sendPasswordResetLink(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print(e);
     }
   }
 }

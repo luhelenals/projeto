@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto/configs/app_settings.dart';
 import 'first_access.dart';
-import '../pages/password_reset.dart';
-import '../pages/home_page.dart';
+import 'package:projeto/authentication/password_reset.dart';
+import 'package:projeto/pages/home_page.dart';
 
 class LogInPage extends StatefulWidget {
   const LogInPage({Key? key}) : super(key: key);
@@ -134,7 +134,7 @@ class _LogInPageState extends State<LogInPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const PasswordResetScreen()),
+                                builder: (context) => PasswordResetScreen()),
                           );
                         },
                         child: Text(
