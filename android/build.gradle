@@ -16,3 +16,14 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.6.1' // Make sure this version is compatible with Gradle 7.6.1
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0" // Update this to match your Kotlin version
+    }
+}

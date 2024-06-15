@@ -1,86 +1,108 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:projeto/configs/app_settings.dart';
-import 'package:projeto/pages/menu_despesa.dart';
+import 'package:projeto/models/despesa.dart';
+import 'package:projeto/models/gasto_categoria.dart';
+import 'package:projeto/repositories/gastomes_repository.dart';
+import 'package:projeto/repositories/meses_repository.dart';
 import 'home_page.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'dart:async';
+import 'dart:html';
+import 'dart:js' as js;
+import 'package:provider/provider.dart';
+import 'package:projeto/apis/fetch_url.dart';
 
 class AddNotaPage extends StatefulWidget {
-  const AddNotaPage({Key? key}) : super(key: key);
-
   @override
-  State<AddNotaPage> createState() => _AddNotaPageState();
+  _AddNotaPageState createState() => _AddNotaPageState();
 }
 
 class _AddNotaPageState extends State<AddNotaPage> {
-  GlobalKey qrcodeKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
-  String result = '';
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData.code!;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(children: [
-        Expanded(
-          flex: 5,
-          child: QRView(
-            key: qrcodeKey,
-            onQRViewCreated: _onQRViewCreated,
-            overlay: QrScannerOverlayShape(
-                borderColor: Colors.white,
-                borderRadius: 10,
-                borderLength: 30,
-                borderWidth: 10,
-                cutOutSize: 300,
-              ),
-          )),
-        Expanded(
-          child: Center(
-            child: Text("Resultado: $result")))
-      ])
+    return Provider<ApiService>(
+      create: (_) => ApiService('http://localhost:5000/extrairNota'),
+      child: HtmlProvider(),
     );
   }
 }
 
-/* class _AddNotaPageState extends State<AddNotaPage> {
-  GlobalKey qrcodeKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
-  String result = '';
-
+class HtmlProvider extends StatefulWidget {
   @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
+  _HtmlProviderState createState() => _HtmlProviderState();
+}
+
+class _HtmlProviderState extends State<HtmlProvider> {
+  String _scanResult = '';
+
+  Future<void> _scanQRCode() async {
+    final String? barcodeScanRes = await scanQRCode();
+    setState(() {
+      _scanResult = barcodeScanRes ?? '';
+    });
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData.code!;
-      });
-    });
+  Future<String?> scanQRCode() async {
+    final completer = Completer<String?>();
+
+    // Access the video element
+    final video = VideoElement();
+
+    // Access the canvas element
+    final canvas = CanvasElement();
+    final canvasContext = canvas.context2D;
+
+    // Access the camera and stream the video
+    try {
+      final mediaDevices = window.navigator.mediaDevices;
+      if (mediaDevices != null) {
+        final stream = await mediaDevices.getUserMedia({'video': true});
+        video.srcObject = stream;
+        await video.play();
+      } else {
+        completer.completeError("MediaDevices not available.");
+        return completer.future;
+      }
+    } catch (e) {
+      completer.completeError("Failed to access camera: $e");
+      return completer.future;
+    }
+
+    // Continuously scan the video stream for QR codes
+    void scan() {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvasContext.drawImage(video, 0, 0);
+
+      final imageData = canvasContext.getImageData(0, 0, canvas.width!, canvas.height!);
+      final code = js.context.callMethod('jsQR', [imageData.data, imageData.width, imageData.height]);
+
+      if (code != null) {
+        completer.complete(code['data']);
+      } else {
+        window.requestAnimationFrame((_) => scan());
+      }
+    }
+
+    // Start scanning
+    scan();
+
+    // Return the result when scanning is complete
+    return completer.future;
   }
 
   @override
   Widget build(BuildContext context) {
+    final apiService = Provider.of<ApiService>(context);
     return Scaffold(
-        body: Stack(children: [
-      Center(
+      appBar: AppBar(
+        backgroundColor: AppSettings.getCorFundo(),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -124,167 +146,177 @@ class _AddNotaPageState extends State<AddNotaPage> {
                     ),
                   )),
               const SizedBox(height: 30),
-              /* if(link != '')
-                Text('link: $link'), */
-              /* Container(
-                width: 300,
-                height: 300,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-              ), */
-              //ElevatedButton(onPressed: readQRCode, child: const Text("Ler QR Code"))
-              Expanded(
-                flex: 5,
-                child: QRView(
-                  key: qrcodeKey,
-                  onQRViewCreated: _onQRViewCreated,
-                )),
-              Expanded(
-                child: Center(
-                  child: Text("Resultado: $result")))
+              ElevatedButton(
+              onPressed: () async {
+                await _scanQRCode(); // Ensure to await the function
+                final url = _scanResult;
+                if (url.isNotEmpty) {
+                  try {
+                    final Map<String, dynamic> content = await apiService.fetchContent(url);
+                    if (context.mounted) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ResumoNotaPage(content: content),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to fetch content: $e')),
+                      );
+                    }
+                  }
+                }
+              },
+              child: const Text('Scan QR Code'),
+            ),
             ]),
       ),
-      Positioned(
-        top: 0,
-        left: 0,
-        child: IconButton(
-          onPressed: () {
-            Navigator.pop(
-              context,
-              MaterialPageRoute(builder: (context) => MenuDespesa()),
-            );
-          },
-          icon: Icon(Icons.arrow_back, color: AppSettings.getCorTema()),
+          ],
         ),
       ),
-    ]));
-  }
-} */
-
-class ResumoNotaPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-            Text(
-              'Resumo das suas compras',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: AppSettings.getCorTema(),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18),
-            ),
-            const SizedBox(height: 20),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 450, maxHeight: 500),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: AppSettings.getCorTema(),
-                ),
-                child: SingleChildScrollView(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color(
-                        0xFF204522,
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(16.0),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(children: [
-                          Text(
-                            'Item',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                          SizedBox(width: 150),
-                          Text(
-                            'Valor',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                          SizedBox(width: 60),
-                          Text(
-                            'Categoria',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                        ]),
-                        SizedBox(height: 10.0),
-                        Text(
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?',
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.white), // Set text color to white
-                        ),
-                        SizedBox(height: 16.0),
-                        Text(
-                          'Another long text:',
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.white), // Set text color to white
-                        ),
-                        SizedBox(height: 10.0),
-                        Text(
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla auctor augue a lectus suscipit, eget finibus quam eleifend. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec accumsan ligula libero, quis accumsan tortor dictum at. Suspendisse potenti. In hac habitasse platea dictumst. Sed in libero vestibulum, sollicitudin odio sit amet, faucibus mauris. Aenean dictum laoreet diam eu sagittis. Integer ut purus vehicula, eleifend tellus quis, efficitur nulla. Suspendisse malesuada ligula eu arcu egestas, non scelerisque nisi efficitur.',
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.white), // Set text color to white
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    WidgetStateProperty.all<Color>(const Color(0xFFDEFFDF)),
-                minimumSize:
-                    WidgetStateProperty.all<Size>(const Size(200, 50)),
-                textStyle: WidgetStateProperty.all<TextStyle>(
-                  TextStyle(color: AppSettings.getCorTema()),
-                ),
-              ),
-              child: Text(
-                'Salvar',
-                style: TextStyle(
-                    color: AppSettings.getCorTema(),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MyHomePage(input: [])),
-                );
-              },
-            ),
-          ])),
     );
   }
 }
 
+class ResumoNotaPage extends StatefulWidget {
+  final Map<String, dynamic> content;
+
+  ResumoNotaPage({required this.content});
+
+  @override
+  _ResumoNotaPageState createState() => _ResumoNotaPageState();
+}
+
+class _ResumoNotaPageState extends State<ResumoNotaPage> {
+  late List<dynamic> produtos;
+  late List<dynamic> precos;
+  late String data;
+  late List<dynamic> categorias;
+
+  @override
+  void initState() {
+    super.initState();
+    produtos = widget.content['produtos'];
+    precos = widget.content['preços'];
+    data = widget.content['data'];
+    categorias = widget.content['categoria'];
+  }
+
+  void _editarCategoria(int index) async {
+    String? novaCategoria = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return EditarCategoriaPopup(
+          categoriaAtual: categorias[index],
+        );
+      },
+    );
+
+    if (novaCategoria != null && novaCategoria.isNotEmpty) {
+      setState(() {
+        categorias[index] = novaCategoria;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Resumo das compras de $data', style: TextStyle(color: AppSettings.getCorSecundaria())),
+        backgroundColor: AppSettings.getCorTema(),
+        automaticallyImplyLeading: false,
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: produtos.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(produtos[index].toString()),
+                  subtitle: Text(categorias[index]),
+                  trailing: Text('R\$${precos[index]}', style: const TextStyle(fontSize: 20)),
+                  onTap: () {
+                    _editarCategoria(index);
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.all<Color>(AppSettings.getCorFundo()),
+              minimumSize: WidgetStateProperty.all<Size>(const Size(200, 50)),
+              textStyle: WidgetStateProperty.all<TextStyle>(
+                TextStyle(color: AppSettings.getCorTema()),
+              ),
+            ),
+            child: Text(
+              'Salvar',
+              style: TextStyle(
+                color: AppSettings.getCorTema(),
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            onPressed: () {
+              DateTime dataFormated = DateFormat('dd/MM/yyyy').parse(data);
+              for(int i = 0; i < produtos.length; i++) {
+                GastoMensalRepository.adicionarGasto(
+                  MesRepository.obterMes(dataFormated.month).num,
+                  Despesa(
+                    data: dataFormated,
+                    valor: double.parse(precos[i].replaceAll(',', '.')),
+                    descricao: produtos[i],
+                    categoria: Categoria(categoria: CategoriaExtension.fromString(categorias[i])),
+                    exibir: false
+                  ));
+              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MyHomePage(input: [])),
+              );
+            },
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+}
+
+class EditarCategoriaPopup extends StatelessWidget {
+  final String categoriaAtual;
+
+  EditarCategoriaPopup({required this.categoriaAtual});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Editar Categoria'),
+      content: DropdownButtonFormField<String>(
+        value: categoriaAtual,
+        items: enumCategoria.values.map((enumCategoria categoria) {
+          return DropdownMenuItem<String>(
+            value: categoria.name,
+            child: Text(categoria.name),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          Navigator.of(context).pop(newValue);
+        },
+      ),
+    );
+  }
+}
 class OndeEncontroIssoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

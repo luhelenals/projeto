@@ -3,6 +3,7 @@ import 'package:projeto/configs/app_settings.dart';
 import 'package:projeto/models/despesa.dart';
 import 'package:projeto/models/gasto_categoria.dart';
 import 'package:projeto/pages/home_page.dart';
+import 'package:projeto/pages/menu_despesa.dart';
 import 'package:projeto/repositories/gastomes_repository.dart';
 import 'package:projeto/repositories/meses_repository.dart';
 import 'add_nota.dart';
@@ -46,7 +47,7 @@ class HtmlProvider extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: const Color(0xFF204522),
+                  color: AppSettings.getCorTema(),
                 ),
                 child: const Text(
                   'Aponte sua câmera para o QR Code ou digite a chave de acesso da sua nota fiscal para cadastrar seus itens automaticamente!',
@@ -64,15 +65,15 @@ class HtmlProvider extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => OndeEncontroIssoPage()),
                   );
                 },
-                child: const Text(
+                child: Text(
                   'Onde encontro isso?',
                   style: TextStyle(
                     color: Colors.transparent,
                     shadows: [
-                      Shadow(color: Color(0xFF204522), offset: Offset(0, -3))
+                      Shadow(color: AppSettings.getCorTema(), offset: const Offset(0, -3))
                     ],
                     decoration: TextDecoration.underline,
-                    decorationColor: Color(0xFF204522),
+                    decorationColor: AppSettings.getCorTema(),
                     decorationThickness: 2,
                   ),
                 ),
@@ -92,16 +93,16 @@ class HtmlProvider extends StatelessWidget {
               ),
               ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFFDEFFDF)),
+                  backgroundColor: WidgetStateProperty.all<Color>(AppSettings.getCorFundo()),
                   minimumSize: WidgetStateProperty.all<Size>(const Size(200, 50)),
                   textStyle: WidgetStateProperty.all<TextStyle>(
-                    const TextStyle(color: Color(0xFF204522)),
+                    TextStyle(color: AppSettings.getCorTema()),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Salvar',
                   style: TextStyle(
-                      color: Color(0xFF204522),
+                      color: AppSettings.getCorTema(),
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
@@ -137,10 +138,10 @@ class HtmlProvider extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(
                   context,
-                  MaterialPageRoute(builder: (context) => AddNotaPage()),
+                  MaterialPageRoute(builder: (context) => MenuDespesa()),
                 );
               },
-              icon: const Icon(Icons.arrow_back, color: Color(0xFF204522)),
+              icon: Icon(Icons.arrow_back, color: AppSettings.getCorTema()),
             ),
           ),
         ],
