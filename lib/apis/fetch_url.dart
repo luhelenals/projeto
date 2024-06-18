@@ -18,7 +18,7 @@ class ApiService {
       final postData = {'produtos': produtos};
 
       final postResponse = await http.post(
-        Uri.parse("http://192.168.41.38:5000/predict"),
+        Uri.parse("http://10.40.17.138:5000/predict"),
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*"},

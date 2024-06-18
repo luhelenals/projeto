@@ -53,3 +53,8 @@
     <key>NSAllowsArbitraryLoads</key>
     <true/>
 </dict>
+
+<key>NSPhotoLibraryUsageDescription</key>
+<string>We need access to your photo library to upload profile pictures.</string>
+<key>NSCameraUsageDescription</key>
+<string>We need access to your camera to take profile pictures.</string>

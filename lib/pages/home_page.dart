@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:projeto/configs/app_settings.dart';
 import 'package:projeto/pages/menu_despesa.dart';
+import 'package:projeto/pages/more_page.dart';
 import 'dashboard_page.dart';
-import 'more_page.dart';
+import 'settings_page.dart';
 import 'menu_recebimento.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -41,13 +43,17 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Despesa',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.more_vert),
-            label: 'Mais',
+            icon: Icon(Icons.newspaper),
+            label: 'Novidades',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Ajustes',
           ),
         ],
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color(0xFF204522),
+        selectedItemColor: AppSettings.getCorTema(),
         onTap: _onItemTapped,
       ),
     );
@@ -62,7 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         return MenuDespesa();
       case 3:
-        return const MorePage();
+        return MorePage();
+      case 4:
+        return const SettingsPage();
       default:
         return Container();
     }

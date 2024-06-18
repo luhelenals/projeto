@@ -4,6 +4,8 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late String email;
   late String nome;
+  late String celular;
+  late String foto;
 
   AuthService();
 
@@ -11,11 +13,15 @@ class AuthService {
     User? user = _auth.currentUser;
 
     if (user != null) {
-      email = user.email ?? 'No Email';
-      nome = user.displayName ?? 'No Name';
+      email = user.email ?? '';
+      nome = user.displayName ?? '';
+      celular = user.phoneNumber ?? '';
+      foto = user.photoURL ?? '';
     } else {
-      email = 'No Email';
-      nome = 'No Name';
+      email = '';
+      nome = '';
+      celular = '';
+      foto = '';
     }
   }
 
