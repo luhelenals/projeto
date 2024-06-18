@@ -11,7 +11,10 @@ class NotificationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications Page'),
+        title: Text('Notifications Page',
+        style: TextStyle(color: AppSettings.getCorSecundaria())),
+        backgroundColor: AppSettings.getCorTema(),
+        iconTheme: IconThemeData(color: AppSettings.getCorTema()),
       ),
       body: const Center(
         child: Text('Notifications Page Content'),
@@ -27,7 +30,10 @@ class ThemePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Theme Page'),
+        title: Text('Theme Page',
+        style: TextStyle(color: AppSettings.getCorSecundaria())),
+        backgroundColor: AppSettings.getCorTema(),
+        iconTheme: IconThemeData(color: AppSettings.getCorTema())
       ),
       body: const Center(
         child: Text('Theme Page Content'),
