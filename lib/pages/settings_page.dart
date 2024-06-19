@@ -14,7 +14,7 @@ class NotificationsPage extends StatelessWidget {
         title: Text('Notifications Page',
         style: TextStyle(color: AppSettings.getCorSecundaria())),
         backgroundColor: AppSettings.getCorTema(),
-        iconTheme: IconThemeData(color: AppSettings.getCorTema()),
+        iconTheme: IconThemeData(color: AppSettings.getCorSecundaria()),
       ),
       body: const Center(
         child: Text('Notifications Page Content'),
@@ -33,7 +33,7 @@ class ThemePage extends StatelessWidget {
         title: Text('Theme Page',
         style: TextStyle(color: AppSettings.getCorSecundaria())),
         backgroundColor: AppSettings.getCorTema(),
-        iconTheme: IconThemeData(color: AppSettings.getCorTema())
+        iconTheme: IconThemeData(color: AppSettings.getCorSecundaria())
       ),
       body: const Center(
         child: Text('Theme Page Content'),

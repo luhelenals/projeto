@@ -13,12 +13,18 @@ Future<List<dynamic>> fetchNews() async {
   int i = 0;
   if (response.statusCode == 200) {
     List<dynamic> artigos = json.decode(response.body)['articles'];
+    print(artigos.length);
     for(i=0; i<artigos.length; i++) {
-      if(artigos[i]['title'] == null || artigos[i]['description'] == null || artigos[i]['url'] == null
-      || artigos[i]['title'] == '[Removed]' || artigos[i]['description'] == '[Removed]' || artigos[i]['url'] == '[Removed]') {
+      if(artigos[i]['title'] == null || artigos[i]['description'] == null || artigos[i]['url'] == null ||
+      artigos[i]['title'].toLowerCase().contains('removed') ||
+      artigos[i]['description'].toLowerCase().contains('removed') ||
+      artigos[i]['url'].toLowerCase().contains('removed')) {
+        print(artigos[i]['title']);
+        print(artigos[i]['description']);
         artigos.removeAt(i);
       }
     }
+    print(artigos.length);
     return artigos;
   } else {
     throw Exception('Failed to load news');
@@ -62,18 +68,23 @@ class _MorePageState extends State<MorePage> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             final articles = snapshot.data;
-            return ListView.separated( // existem nulos, remover
+            return ListView.separated(
               shrinkWrap: true,
               itemCount: articles!.length,
-              itemBuilder: (context, index) { // implementar link para notícia
+              itemBuilder: (context, index) {
                 final article = articles[index];
                 return ListTile(
                   title: Text(article['title']!, 
                     style: const TextStyle(fontWeight: FontWeight.bold,
                     fontSize: 18)),
                   subtitle: Text(article['description']!),
-                  trailing: article['urlToImage'] != null
-                      ? Image.network(article['urlToImage'], width: 120, fit: BoxFit.cover)
+                  trailing: article['urlToImage'] != null && article['urlToImage']!.isNotEmpty
+                      ? Image.network(article['urlToImage'],
+                        width: 120,
+                        fit: BoxFit.cover,
+                        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                          return const Icon(Icons.image_not_supported);
+                        },)
                       : null,
                   onTap: () {
                     _launchURL(article['url']);
