@@ -1,4 +1,4 @@
-# projeto
+# Lus
 Projeto de Programação de Dispositivos Móveis - Aplicativo de Controle financeiro "Lus"
 
 Melhorias da parte 2:
